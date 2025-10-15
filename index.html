@@ -84,7 +84,17 @@
     </head>
 
     <!-- Custom PostHead code is injected here -->
-    
+    <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js';
+
+    // Create a configuration object for Firebase
+    const firebaseConfig = {};
+
+    initializeApp(firebaseConfig);
+    console.log("Firebase app initialized successfully.");
+
+    window.FirebaseSetupExt = true;
+</script>
 
     <!-- Custom PreBody code is injected here -->
     
@@ -102,7 +112,7 @@
         </div>
 
         <!-- Run the game code -->
-        <script type="text/javascript" src="SangSangAmook/SangSangAmook.js?cachebust=923004386"></script>
+        <script type="text/javascript" src="SangSangAmook/SangSangAmook.js?cachebust=445613052"></script>
 
         <!-- Builtin injector for injecting runner path -->
         
@@ -115,5 +125,34 @@
     </body>
 
     <!-- Custom PostBody code is injected here -->
-    
+    <script type="module">
+    // Define a function to conditionally initialize Firebase Firestore
+    async function initializeFirebaseFirestore() {
+        try {
+            // Check if Firebase has been initialized
+            if (window.FirebaseSetupExt) {
+                const FirebaseFirestoreModule = await import('https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js');
+                
+                // Initialize or merge module into the global namespace
+                window.FirebaseFirestoreExt = Object.assign(window.FirebaseFirestoreExt || {}, {
+                    module: FirebaseFirestoreModule,
+                    instance: FirebaseFirestoreModule.getFirestore()
+                });
+                console.log("Firebase Firestore initialized successfully");
+            } else {
+                console.warn("Firebase is not initialized. Skipping Firebase Firestore initialization.");
+            }
+        } catch (error) {
+            console.error("Failed to initialize Firebase Firestore. Ensure Firebase is initialized before loading Firebase Firestore.", error.message);
+        }
+    }
+
+    var mode = "SDKs When Available";
+    if (mode === "SDKs Only" || mode === "SDKs When Available") {
+        // Call the function to conditionally initialize Firebase Firestore
+        initializeFirebaseFirestore();
+    } else {
+        console.log("Firebase Firestore initialized successfully");
+    }
+</script>
 </html>
